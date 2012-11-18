@@ -54,6 +54,7 @@ var WebAudioService = require('Player/WebAudioService');
 var CordovaAudioService = require('Player/CordovaAudioService');
 
 var Auphonic = require('Auphonic');
+var Platform = require('Platform');
 
 // Register Partials for Handlebars
 Handlebars.registerPartial('preset', Handlebars.templates.preset);
@@ -420,6 +421,9 @@ window.__BOOTAPP = function() {
     },
 
     onTransitionEnd: function() {
+      if (Platform.isAndroid())
+        this.getBack().toElement().getSiblings('.button-left').dispose();
+
       var stack = this.getStack();
       var previous = stack && stack.getPrevious();
       if (previous && previous.isRendered()) previous.toElement().getElements('ul li a.selected').removeClass('selected');
@@ -432,6 +436,7 @@ window.__BOOTAPP = function() {
     load();
 
     View.getMain().push('home', new View.Object({
+      title: Platform.isIOS() ? '' : 'Home',
       backTitle: 'Home',
       content: UI.render('home', {
         feedback: Auphonic.FeedbackURL
